@@ -34,20 +34,21 @@ wsServer.on('request', function (request) {
   // console.log(clients)
 
   connection.on('message', function (message) {
-    console.log(message)
+    //console.log(message)
   });
 
   connection.on('close', function (connection) {
-    clients.splice(index, 1);
+    //clients.splice(index, 1);
     // console.log('client dc')
+	console.log(index)
   });
 
 });
 
 var dsn = {
   host: 'localhost',
-  user: 'root',
-  password: 're^mp123'
+  user: 'developer',
+  password: 'htp@developer'
 }
 
 var MySQLEvents = require('mysql-events');
@@ -56,7 +57,7 @@ var myCon = MySQLEvents(dsn);
 var socketData = {}
 
 var event1 = myCon.add(
-  'integdb.lppkn_device_order',
+  'rhis_analyzer.lppkn_device_order',
   function (oldRow, newRow, event) {
     if (oldRow !== null && newRow !== null) {
       console.log('broadcast message')
@@ -86,12 +87,14 @@ var event1 = myCon.add(
 );
 
 var event2 = myCon.add(
-  'integdb.lppkn_orders',
+  'rhis_analyzer.lppkn_orders',
   function (oldRow, newRow, event) {
     if (oldRow !== null && newRow !== null) {
+      console.log('.....')
       console.log('broadcast message')
     }
     if (oldRow === null) {
+	console.log('.....')
       var order_data = JSON.parse(newRow.fields.order_detail)
       // var data = {
       //   screen: "order",
@@ -110,6 +113,7 @@ var event2 = myCon.add(
       // console.log(data)
     }
     if (newRow === null) {
+console.log('.....')
       console.log(newRow)
       console.log('data deleted');
     }
@@ -117,12 +121,13 @@ var event2 = myCon.add(
 );
 
 var event3 = myCon.add(
-  'integdb.lppkn_result',
+  'rhis_analyzer.lppkn_result',
   function (oldRow, newRow, event) {
     if (oldRow !== null && newRow !== null) {
       console.log('broadcast message')
     }
     if (oldRow === null) {
+//console.log(newRow.fields)
       var data = newRow.fields
       var result = {
         screen: "result",
@@ -134,6 +139,7 @@ var event3 = myCon.add(
         transaction_code: data.transaction_code,
         result: JSON.parse(data.result)
       }
+      console.log("result from " + data.device_id + " received")
       broadcast_message(result)
     }
     if (newRow === null) {
